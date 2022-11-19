@@ -62,7 +62,7 @@ namespace NZWalks.API.Controllers
             return Ok(response);
         }
         [HttpPost]
-        public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegionRequest)
+        public async Task<IActionResult> AddRegionAsync([FromBody]AddRegionRequest addRegionRequest)
 
         {
             // Convert request to Domain model

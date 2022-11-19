@@ -14,6 +14,6 @@ namespace NZWalks.API.Models.DTOs
 
 
         // Navigation Property
-        public IEnumerable<Walk>? Walks { get; set; }
+        //public IEnumerable<Walk> Walks { get; set; }
     }
 }
