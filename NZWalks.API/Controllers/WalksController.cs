@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTOs;
 using NZWalks.API.Repositories;
+using System.Runtime.InteropServices;
 
 namespace NZWalks.API.Controllers
 {
@@ -55,16 +56,42 @@ namespace NZWalks.API.Controllers
             // Pass details to the response
             var response = await walksRepository.AddWalkAsync(request);
             // Convert response to DTO model
-            var responseDTO = new WalkDTO()
-            {
-                Id = response.Id,
-                Name = response.Name,
-                Length = response.Length,
-                RegionId = response.RegionId,
-                WalkDifficultyId = response.WalkDifficultyId
-            };
+            //var responseDTO = new WalkDTO()
+            //{
+            //    Id = response.Id,
+            //    Name = response.Name,
+            //    Length = response.Length,
+            //    RegionId = response.RegionId,
+            //    WalkDifficultyId = response.WalkDifficultyId
+            //};
+            var responseDTO = mapper.Map<Walk>(response);
             // Return DTO
             return CreatedAtAction(nameof(GetWalkAsync), new {id = responseDTO.Id}, responseDTO);
+        }
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteWalkAsync(Guid id)
+        {
+            var request = await walksRepository.DeleteWalkAsync(id);
+            if (request == null) return NotFound();
+            var responseDTO = mapper.Map<WalkDTO>(request);
+            return Ok(responseDTO);
+        }
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateWalkAsync([FromRoute]Guid id, [FromBody]UpdateWalkRequest updateWalkRequest)
+        {
+            var request = new Walk()
+            {
+                Name = updateWalkRequest.Name,
+                Length = updateWalkRequest.Length,
+                RegionId = updateWalkRequest.RegionId,
+                WalkDifficultyId = updateWalkRequest.WalkDifficultyId
+            };
+            if(request == null) return NotFound();
+            var response = await walksRepository.UpdateWalkAsync(id, request);
+            var responseDTO = mapper.Map<WalkDTO>(response);
+            return Ok(responseDTO);
         }
     }
 }
