@@ -64,7 +64,7 @@ namespace NZWalks.API.Controllers
             //    RegionId = response.RegionId,
             //    WalkDifficultyId = response.WalkDifficultyId
             //};
-            var responseDTO = mapper.Map<Walk>(response);
+            var responseDTO = mapper.Map<WalkDTO>(response);
             // Return DTO
             return CreatedAtAction(nameof(GetWalkAsync), new {id = responseDTO.Id}, responseDTO);
         }
@@ -88,8 +88,11 @@ namespace NZWalks.API.Controllers
                 RegionId = updateWalkRequest.RegionId,
                 WalkDifficultyId = updateWalkRequest.WalkDifficultyId
             };
-            if(request == null) return NotFound();
             var response = await walksRepository.UpdateWalkAsync(id, request);
+            if (response == null)
+            {
+                return NotFound();
+            }
             var responseDTO = mapper.Map<WalkDTO>(response);
             return Ok(responseDTO);
         }
